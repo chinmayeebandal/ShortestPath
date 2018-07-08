@@ -4,11 +4,13 @@
 
 int main(){
   graphR grp;
-  grp.addRoute("Capen", "NSC", 10);
-  grp.addRoute("Capen", "Knox", 5);
-  grp.addRoute("NSC", "Knox", 4);
-  grp.addRoute("Knox", "O'Brian", 8);
-  grp.addRoute("NSC", "O'Brian", 15);
+  grp.addRoute("Capen", "Talbert", 5);
+  grp.addRoute("Capen", "Knox", 2);
+  grp.addRoute("Capen", "Cooke", 8);
+  grp.addRoute("Talbert", "Cooke", 3);
+  grp.addRoute("NSC", "Cooke", 4);
+  grp.addRoute("NSC", "Talbert", 1);
+  grp.addRoute("Cooke", "Knox", 10);
   grp.printRoute();
   grp.generatePath("Capen", "O'Brian");
 
