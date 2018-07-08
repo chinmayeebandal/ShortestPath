@@ -42,7 +42,7 @@ class graphR{
 
   public:
     graphR(){
-      for(int i = 0; i < 4; ++i){
+      for(int i = 0; i < (sizeof(bldgs)/sizeof(*bldgs)); ++i){
         std::vector<Node> v;
         v.push_back(Node(bldgs[i], 0));
         list.push_back(v);
@@ -59,17 +59,18 @@ class graphR{
     }
 
     Node getNode(std::string str){
+      Node n;
       for(int i = 0; i < list.size(); ++i){
         if(str == list[i][0].bldg)
           return (list[i][0]);
       }
-      return nullptr;
+      return n; //don't forget to check for null Node wherever getNode is used
     }
 
     void printRoute(){
       for(int i=0; i < list.size(); ++i){
         for(auto x : list[i]){
-          std::cout << x.bldg << x.dist;
+          std::cout << x.bldg << x.dist << "->";
         }
         std::cout << std::endl;
       }
@@ -140,6 +141,6 @@ class graphR{
   private:
     //int size = 4;
     std::vector< std::vector<Node> > list;
-    std::string bldgs[4] = {"Capen", "Talbert", "NSC", "Cooke"};
+    std::string bldgs[5] = {"Capen", "Talbert", "NSC", "Cooke", "Knox"};
 };
 //#endif
