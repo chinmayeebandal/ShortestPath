@@ -16,6 +16,7 @@ struct Node{
 
   Node() : bldg(""){}
   Node(std::string b, int d) : bldg(b), dist(d), visit(false), prev(""){}
+  Node(std::string b, int d, bool v) : bldg(b), dist(d), visit(v), prev(""){}
 
   void setVisit(bool set){ visit = set; }
   void setNewDist(int d) { newDist = d; }
@@ -44,7 +45,7 @@ class graphR{
     graphR(){
       for(int i = 0; i < (sizeof(bldgs)/sizeof(*bldgs)); ++i){
         std::vector<Node> v;
-        v.push_back(Node(bldgs[i], 0));
+        v.push_back(Node(bldgs[i], 0, false));
         list.push_back(v);
       }
     }
@@ -97,22 +98,9 @@ class graphR{
       }
       if (currNode.bldg == endNode.bldg) return;
 
-
-/*
-      //set similar nodes to true
-      int idx = getIndex(currNode.bldg);
-      for(int i = 1; i<list[idx].size(); ++i){ //skip 1st elem
-        if(list[idx][0].visit == false){
-          std::cout << list[idx][0].bldg << " " << list[idx][0].newDist << std::endl;
-        //  list[idx][i].newDist = currNode.newDist + list[idx][i].dist;
-        //  Queue.push(list[idx][i]);
-          //std::cout << list[idx][i].bldg << "pushed" << std::endl;
-        }
-      }*/
-
       //std::cout << currNode.bldg << " " << currNode.newDist << ", " << endNode.bldg << " " << endNode.newDist << std::endl;
 
-     if(currNode.bldg != endNode.bldg /*&& currNode.visit == false*/){
+     if(currNode.bldg != endNode.bldg){
          std::priority_queue<Node, std::vector<Node>, min_pqueue> Q;
 
         for(int i = 1; i < list[idx1].size(); ++i){
@@ -121,35 +109,22 @@ class graphR{
            Q.push(list[idx1][i]);
            //std::cout << list[idx1][i].bldg << " pushed into priority queue" << std::endl;
         }
-        std::cout << "Top element: " << Q.top().bldg << std::endl;
+
         Node top = getNode(Q.top().bldg);
         if(top.visit == true){
           Q.pop();
-          std::cout << "popped" << std::endl;
+          //std::cout << "popped" << std::endl;
+          top = getNode(Q.top().bldg);
+          //std::cout << "Top element: " << top.bldg << std::endl;
         }
-        else{
-          std::cout << "not popped" << std::endl;
-          top.prev = currNode.bldg; //set prev node
-          currNode.visit = true;
-
-        }
-
-        //dijkstra(tmp, endNode);
+        //std::cout << top.visit << std::endl;
+        top.prev = currNode.bldg; //set prev node
+        currNode.visit = true;
+        //std::cout << top.bldg << top.visit << std::endl;
      }
-
-
-
-
-
-/*
-      Node temp = Queue.top();
-      temp.prev = currNode.bldg;
-      currNode.visit = true;
-      currNode = temp;
-
-
-      dijkstra(currNode, endNode); */
+     //std::cout << currNode.bldg << std::endl;
     }
+
     void generatePath(std::string src, std::string tgt){
       for(int i = 0; i < list.size(); ++i){ //okay
         if(list[i][0].bldg == src) {
@@ -170,7 +145,7 @@ class graphR{
         std::cout << "Error! Enter valid point." << std::endl;
         return;
       }
-      std::cout << "Okay" << std::endl;
+    //  std::cout << "Okay" << std::endl;
 
 
      dijkstra(currNode, endNode);
