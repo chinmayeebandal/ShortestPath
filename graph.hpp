@@ -94,12 +94,17 @@ class graphR{
 
       //set similar nodes to true
       int idx = getIndex(currNode.bldg);
-      for(int i = 1; i<list.size(); ++i){ //skip 1st elem
+      for(int i = 1; i<list[idx].size(); ++i){ //skip 1st elem
         if(list[idx][0].visit == false){
-          list[idx][i].newDist = currNode.newDist + list[idx][i].dist;
-          Queue.push(list[idx][i]);
+          std::cout << list[idx][0].bldg << " " << list[idx][0].newDist << std::endl;
+        //  list[idx][i].newDist = currNode.newDist + list[idx][i].dist;
+        //  Queue.push(list[idx][i]);
+          //std::cout << list[idx][i].bldg << "pushed" << std::endl;
         }
       }
+
+
+
       Node temp = Queue.top();
       temp.prev = currNode.bldg;
       currNode.visit = true;
@@ -108,19 +113,26 @@ class graphR{
       dijkstra(currNode, endNode);
     }
     void generatePath(std::string src, std::string tgt){
-      int idxSrc = getIndex(src);
+      //int idxSrc = getIndex(src);
 
       for(int i = 0; i < list.size(); ++i){
-        if(i != idxSrc) {
-          list[i][0].setNewDist(std::numeric_limits<int>::max());
+        if(list[i][0].bldg == src) {
+          list[i][0].newDist = 0;
+          continue;
         }
-        list[i][0].setNewDist(0);
+        list[i][0].newDist = std::numeric_limits<int>::max();
+
       }
+
+      //Debugging purposes
+      /*for(int i=0; i<list.size(); ++i){ 
+        std::cout << list[i][0].bldg << " " << list[i][0].newDist << std::endl;
+      }*/
 
       Node currNode = getNode(src);
       Node endNode = getNode(tgt);
 
-      dijkstra(currNode, endNode);
+    /* dijkstra(currNode, endNode);
 
       std::stack<std::string> stck;
       while(endNode.bldg == ""){
@@ -135,6 +147,7 @@ class graphR{
       }
       std::cout << tgt;
       std::cout << std::endl;
+      */
 
     }
 
