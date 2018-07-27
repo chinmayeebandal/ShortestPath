@@ -6,38 +6,7 @@
 #include <limits>
 #include <queue>
 #include <stack>
-
-struct Node{
-  std::string bldg;
-  int dist;
-  bool visit;
-  int newDist;
-  std::string prev;
-
-  Node() : bldg(""){}
-  Node(std::string b, int d) : bldg(b), dist(d), visit(false), prev(""){}
-  Node(std::string b, int d, bool v) : bldg(b), dist(d), visit(v), prev(""){}
-
-  void setVisit(bool set){ visit = set; }
-  void setNewDist(int d) { newDist = d; }
-  void setPrev(std::string p){ prev = p; }
-};
-
-struct min_pqueue{
-  bool operator()(const Node lhs, const Node rhs){
-    if(lhs.dist > rhs.dist){
-      return true;
-    }
-    //implement equality
-  /*  else if(lhs.dist == rhs.dist){
-      if(word1->first > word2->first){
-                  return true;
-                }
-              }*/
-    return false;
-  }
-};
-
+#include "stuff.hpp"
 
 class graphR{
 
@@ -89,6 +58,7 @@ class graphR{
     }
 
     void dijkstra(Node currNode, Node endNode){
+      std::priority_queue<Node, std::vector<Node>, min_pqueue> Q;
       int idx1 = getIndex(currNode.bldg);
       int idx2 = getIndex(endNode.bldg);
 
@@ -96,33 +66,29 @@ class graphR{
         std::cout << "Error! Point does not exist." << std::endl;
         return;
       }
-      if (currNode.bldg == endNode.bldg) return;
 
-      //std::cout << currNode.bldg << " " << currNode.newDist << ", " << endNode.bldg << " " << endNode.newDist << std::endl;
+     Node top;
+     visit[idx1] = true;
+     std::cout << currNode.bldg << std::endl;
 
      if(currNode.bldg != endNode.bldg){
-         std::priority_queue<Node, std::vector<Node>, min_pqueue> Q;
-
         for(int i = 1; i < list[idx1].size(); ++i){
-           list[idx1][i].newDist = currNode.dist + list[idx1][i].dist;
-           //std::cout << list[idx1][i].bldg << " " << list[idx1][i].newDist << std::endl;
-           Q.push(list[idx1][i]);
-           //std::cout << list[idx1][i].bldg << " pushed into priority queue" << std::endl;
+          if(visit[getIndex(list[idx1][i].bldg)] == false){
+             list[idx1][i].newDist = currNode.newDist + list[idx1][i].dist;
+             Q.push(list[idx1][i]);
+             std::cout << list[idx1][i].bldg << " pushed into priority queue" << std::endl;
+           }
         }
 
-        Node top = getNode(Q.top().bldg);
-        if(top.visit == true){
-          Q.pop();
-          //std::cout << "popped" << std::endl;
-          top = getNode(Q.top().bldg);
-          //std::cout << "Top element: " << top.bldg << std::endl;
-        }
-        //std::cout << top.visit << std::endl;
-        top.prev = currNode.bldg; //set prev node
-        currNode.visit = true;
-        //std::cout << top.bldg << top.visit << std::endl;
+        int saveNewDist = Q.top().newDist; // this is the actual updated newDist
+        std::cout << " savenewDist: " <<  Q.top().bldg << saveNewDist << std::endl;
+
+        top = getNode(Q.top().bldg); // top distance is INF here
+        top.newDist = saveNewDist;
+        currNode = top;
+
+        dijkstra(currNode, endNode);
      }
-     //std::cout << currNode.bldg << std::endl;
     }
 
     void generatePath(std::string src, std::string tgt){
@@ -171,5 +137,6 @@ class graphR{
     //int size = 4;
     std::vector< std::vector<Node> > list;
     std::string bldgs[5] = {"Capen", "Talbert", "NSC", "Cooke", "Knox"};
+    bool visit[5] = {false, false, false, false, false};
 };
 //#endif
