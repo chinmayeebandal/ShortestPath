@@ -6,7 +6,7 @@
 #include <limits>
 #include <queue>
 #include <stack>
-#include "stuff.hpp"
+#include "node.hpp"
 
 class graphR{
 
