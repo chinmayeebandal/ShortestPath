@@ -5,7 +5,6 @@
 #include <vector>
 #include <limits>
 #include <queue>
-#include <stack>
 #include "node.hpp"
 
 class graphR{
@@ -37,7 +36,8 @@ class graphR{
       return n; //don't forget to check for null Node wherever getNode is used
     }
 
-    void printRoute(){
+    void printGraph(){
+      std::cout << "Graph: " << std::endl;
       for(int i=0; i < list.size(); ++i){
         for(auto x : list[i]){
           std::cout << x.bldg << x.dist << "->";
@@ -69,22 +69,24 @@ class graphR{
 
      Node top;
      visit[idx1] = true;
-     std::cout << currNode.bldg << std::endl;
+     //std::cout << currNode.bldg << std::endl;
+     path.push_back(currNode);
 
      if(currNode.bldg != endNode.bldg){
         for(int i = 1; i < list[idx1].size(); ++i){
           if(visit[getIndex(list[idx1][i].bldg)] == false){
              list[idx1][i].newDist = currNode.newDist + list[idx1][i].dist;
              Q.push(list[idx1][i]);
-             std::cout << list[idx1][i].bldg << " pushed into priority queue" << std::endl;
+             //std::cout << list[idx1][i].bldg << " pushed into priority queue" << std::endl;
            }
         }
 
         int saveNewDist = Q.top().newDist; // this is the actual updated newDist
-        std::cout << " savenewDist: " <<  Q.top().bldg << saveNewDist << std::endl;
+        //std::cout << " savenewDist: " <<  Q.top().bldg << saveNewDist << std::endl;
 
         top = getNode(Q.top().bldg); // top distance is INF here
         top.newDist = saveNewDist;
+        top.prev = currNode.bldg;
         currNode = top;
 
         dijkstra(currNode, endNode);
@@ -100,10 +102,6 @@ class graphR{
         list[i][0].newDist = std::numeric_limits<int>::max();
       }
 
-      /*for(int i=0; i<list.size(); ++i){
-        std::cout << list[i][0].bldg << " " << list[i][0].newDist << std::endl;
-      }*/
-
       Node currNode = getNode(src);
       Node endNode = getNode(tgt);
 
@@ -111,32 +109,29 @@ class graphR{
         std::cout << "Error! Enter valid point." << std::endl;
         return;
       }
-    //  std::cout << "Okay" << std::endl;
-
 
      dijkstra(currNode, endNode);
+    }
 
-    /*  std::stack<std::string> stck;
-      while(endNode.bldg == ""){
-        std::string str = endNode.prev;
-        stck.push(str);
-        endNode = getNode(str);
+    void printPath(std::string src, std::string tgt){
+      std::cout << "Route from " << src << " to " << tgt << ": " << std::endl;
+
+      int s, t;
+      for(int i = 0; i < path.size(); ++i){
+        if(path[i].bldg == src) s = i;
+        if(path[i].bldg == tgt) t = i;
+        continue;
       }
-
-      while(!stck.empty()){
-        std::cout << stck.top() << " -> ";
-        stck.pop();
+      for(int i = s; i<t; ++i){
+        std::cout << path[i].bldg << "->";
       }
-      std::cout << tgt;
-      std::cout << std::endl;
-      */
-
+      std::cout << path[t].bldg << std::endl;
     }
 
   private:
-    //int size = 4;
     std::vector< std::vector<Node> > list;
     std::string bldgs[5] = {"Capen", "Talbert", "NSC", "Cooke", "Knox"};
     bool visit[5] = {false, false, false, false, false};
+    std::vector<Node> path;
 };
 //#endif
